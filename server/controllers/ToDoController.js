@@ -6,7 +6,7 @@ module.exports.getToDo = async (req, res) => {
     res.set(200).send(todo);
   } catch (err) {
     console.log(err);
-    res.send(err);
+    res.status(500).send(err);
   }
 };
 
@@ -18,8 +18,8 @@ module.exports.saveToDo = async (req, res) => {
     console.log(newModel);
     res.set(201).send(newModel);
   } catch (err) {
-    res.send(err);
     console.log(err);
+    res.status(500).send(err);
   }
 };
 
@@ -32,7 +32,7 @@ module.exports.deleteToDo = async (req, res) => {
     res.set(200).send("deleted");
   } catch (err) {
     console.log(err);
-    res.send(err);
+    res.status(500).send(err);
   }
 };
 
@@ -43,6 +43,6 @@ module.exports.updateToDo = async (req, res) => {
     res.set(200).send("Updated");
   } catch (err) {
     console.log(err);
-    res.send(err);
+    res.status(500).send(err);
   }
 };

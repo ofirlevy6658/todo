@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 
 import Paper from "@mui/material/Paper";
@@ -11,13 +11,12 @@ import Stack from "@mui/material/Stack";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert, { AlertColor, AlertProps } from "@mui/material/Alert";
 import { CheckboxList } from "../components/CheckboxList";
-import { ITodo, TodoType } from "../Types";
-import { Typography } from "@mui/material";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getTodos } from "../api/axios";
+import { CircularProgress, Typography } from "@mui/material";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { getTodos, createTodo, deleteTodo, updateTodo } from "../api/axios";
 
 export const Todo = () => {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const [page, setPage] = useState(1);
   const [taskInputValue, setTaskInputValue] = useState("");
   const [toastData, setToastData] = useState<{
@@ -30,22 +29,14 @@ export const Todo = () => {
   });
 
   const addTodoMutation = useMutation({
-    mutationFn: (dec: string) => {
-      return axios.post("http://localhost:5000/save", {
-        desc: taskInputValue,
-      });
-    },
+    mutationFn: (inputValue: string) => createTodo(inputValue),
     onSuccess: (resp) => {
       refetch();
     },
   });
 
   const deleteTodoMutation = useMutation({
-    mutationFn: (id: string) => {
-      return axios.delete("http://localhost:5000/delete", {
-        data: { _id: id },
-      });
-    },
+    mutationFn: (id: string) => deleteTodo(id),
     onSuccess: (resp) => {
       if (data && data.data.todos.length === 1 && page > 1) {
         setPage(page - 1);
@@ -54,9 +45,7 @@ export const Todo = () => {
     },
   });
   const updateTodoMutation = useMutation({
-    mutationFn: (data: { _id: string; done: boolean }) => {
-      return axios.put("http://localhost:5000/update", data);
-    },
+    mutationFn: (data: { _id: string; done: boolean }) => updateTodo(data),
     onSuccess: (resp) => {
       refetch();
     },
@@ -156,12 +145,16 @@ export const Todo = () => {
             >
               <InputBase
                 value={taskInputValue}
-                sx={{ ml: 1, flex: 1 }}
+                sx={{ ml: 1, flex: 1, height: "45px" }}
                 placeholder="Add new task"
                 onChange={(e) => setTaskInputValue(e.currentTarget.value)}
               />
               <IconButton type="submit" color="primary">
-                <AddTaskIcon />
+                {addTodoMutation.isLoading ? (
+                  <CircularProgress size={25} />
+                ) : (
+                  <AddTaskIcon />
+                )}
               </IconButton>
             </Paper>
             <Box

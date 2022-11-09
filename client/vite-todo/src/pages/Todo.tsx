@@ -11,41 +11,64 @@ import Stack from "@mui/material/Stack";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert, { AlertColor, AlertProps } from "@mui/material/Alert";
 import { CheckboxList } from "../components/CheckboxList";
-import { ITodo } from "../Types";
+import { ITodo, TodoType } from "../Types";
 import { Typography } from "@mui/material";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getTodos } from "../api/axios";
 
 export const Todo = () => {
-  const [data, setData] = useState<ITodo[]>([]);
   const [open, setOpen] = React.useState(false);
   const [page, setPage] = useState(1);
+  const [taskInputValue, setTaskInputValue] = useState("");
   const [toastData, setToastData] = useState<{
     msg: string;
     severity: AlertColor;
   }>({ severity: "success", msg: "" });
-  const [taskInputValue, setTaskInputValue] = useState("");
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await axios.get("http://localhost:5000/");
-        setData(res.data);
-      } catch (e) {
-        console.log(e);
+  const { data, refetch } = useQuery(["todos", page], () => getTodos(page), {
+    keepPreviousData: true,
+  });
+
+  const addTodoMutation = useMutation({
+    mutationFn: (dec: string) => {
+      return axios.post("http://localhost:5000/save", {
+        desc: taskInputValue,
+      });
+    },
+    onSuccess: (resp) => {
+      refetch();
+    },
+  });
+
+  const deleteTodoMutation = useMutation({
+    mutationFn: (id: string) => {
+      return axios.delete("http://localhost:5000/delete", {
+        data: { _id: id },
+      });
+    },
+    onSuccess: (resp) => {
+      if (data && data.data.todos.length === 1 && page > 1) {
+        setPage(page - 1);
       }
-    };
-    fetchData();
-  }, []);
+      refetch();
+    },
+  });
+  const updateTodoMutation = useMutation({
+    mutationFn: (data: { _id: string; done: boolean }) => {
+      return axios.put("http://localhost:5000/update", data);
+    },
+    onSuccess: (resp) => {
+      refetch();
+    },
+  });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!taskInputValue) return;
     try {
-      const resp = await axios.post("http://localhost:5000/save", {
-        desc: taskInputValue,
-      });
+      await addTodoMutation.mutateAsync(taskInputValue);
       setToastData({ msg: "Task added successfully", severity: "success" });
       setOpen(true);
-      setData([...data, resp.data]);
       setTaskInputValue("");
     } catch (e) {
       setToastData({
@@ -58,12 +81,10 @@ export const Todo = () => {
   };
 
   const handleDelete = async (id: string) => {
-    console.log(id);
     try {
-      await axios.delete("http://localhost:5000/delete", { data: { _id: id } });
+      await deleteTodoMutation.mutateAsync(id);
       setToastData({ msg: "Task removed successfully", severity: "success" });
       setOpen(true);
-      setData((prevData) => prevData?.filter((s) => s._id !== id));
     } catch (e) {
       setToastData({
         msg: "Oops somthing went wrong, please check the connection",
@@ -74,15 +95,8 @@ export const Todo = () => {
   };
 
   const handleToggle = async (id: string, done: boolean) => {
-    console.log(done);
     try {
-      await axios.put("http://localhost:5000/update", { _id: id, done });
-      setData((prevData) =>
-        prevData?.map((s) => {
-          if (s._id === id) s.done = done;
-          return s;
-        })
-      );
+      updateTodoMutation.mutateAsync({ _id: id, done });
     } catch (e) {
       console.log(e);
     }
@@ -160,9 +174,9 @@ export const Todo = () => {
               }}
             >
               <Box>
-                {data ? (
+                {data?.data ? (
                   <CheckboxList
-                    todos={data.slice(page * 7 - 7, page * 7)}
+                    todos={data?.data.todos}
                     onDelete={handleDelete}
                     onToggle={handleToggle}
                   />
@@ -172,8 +186,12 @@ export const Todo = () => {
               </Box>
               <Stack spacing={2}>
                 <Pagination
-                  count={data?.length ? Math.ceil(data.length / 7) : 1 || 1}
-                  page={page}
+                  count={data?.data.totalPages || 1}
+                  page={
+                    page > (data?.data.totalPages || 1)
+                      ? data?.data.totalPages
+                      : page
+                  }
                   onChange={(e, v) => setPage(v)}
                   sx={{
                     "& .MuiPagination-ul": {

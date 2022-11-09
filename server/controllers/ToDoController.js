@@ -1,9 +1,21 @@
 const ToDoModel = require("../models/ToDoModel");
 
 module.exports.getToDo = async (req, res) => {
+  const { page, limit} = req.query;
+
   try {
-    const todo = await ToDoModel.find();
-    res.set(200).send(todo);
+    const todos = await ToDoModel.find()
+      .limit((+limit) * 1)
+      .skip(((+page) - 1) * (+limit))
+      .exec();
+    const count = await ToDoModel.countDocuments();
+
+    res.set(200).send({
+      todos,
+      count,
+      totalPages: Math.ceil(count / (+limit)),
+      currentPage: +page,
+    });
   } catch (err) {
     console.log(err);
     res.status(500).send(err);
@@ -26,9 +38,9 @@ module.exports.saveToDo = async (req, res) => {
 module.exports.deleteToDo = async (req, res) => {
   try {
     const { _id } = req.body;
-    console.log(_id)
+    console.log(_id);
     const a = await ToDoModel.findByIdAndDelete(_id);
-    console.log(a)
+    console.log(a);
     res.set(200).send("deleted");
   } catch (err) {
     console.log(err);

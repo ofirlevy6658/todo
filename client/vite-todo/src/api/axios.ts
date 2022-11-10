@@ -15,7 +15,7 @@ export interface AxiosResponse<T = any> {
 }
 
 export const getTodos = async (page = 1) => {
-  const res: AxiosResponse = await baseUrl.get("", {
+  const res = await baseUrl.get<ITodo>("", {
     params: { page, limit: 7 },
   });
   return res;

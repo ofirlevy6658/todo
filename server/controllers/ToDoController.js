@@ -1,19 +1,19 @@
 const ToDoModel = require("../models/ToDoModel");
 
 module.exports.getToDo = async (req, res) => {
-  const { page, limit} = req.query;
+  const { page, limit } = req.query;
 
   try {
     const todos = await ToDoModel.find()
-      .limit((+limit) * 1)
-      .skip(((+page) - 1) * (+limit))
+      .limit(+limit * 1)
+      .skip((+page - 1) * +limit)
       .exec();
     const count = await ToDoModel.countDocuments();
 
     res.set(200).send({
       todos,
       count,
-      totalPages: Math.ceil(count / (+limit)),
+      totalPages: Math.ceil(count / +limit),
       currentPage: +page,
     });
   } catch (err) {

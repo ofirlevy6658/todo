@@ -5,5 +5,5 @@ mongoose
 	.catch((error) => handleError(error));
 
 function handleError(error: any): any {
-	throw new Error("Function not implemented.");
+	console.error(error);
 }

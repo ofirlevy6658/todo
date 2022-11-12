@@ -49,10 +49,10 @@ export async function addTodo(req: Request, res: Response) {
 
 export async function deleteTodo(req: Request, res: Response) {
   try {
-    const { _id } = req.body;
-    if (!_id) return res.status(400).send('Missing Todo ID');
+    const { id } = req.params;
+    if (!id) return res.status(400).send('Missing Todo ID');
 
-    const result = await db.query('delete from todos where id=$1', [_id]);
+    const result = await db.query('delete from todos where id=$1', [id]);
     res.status(200).send(`Deletes ${result.rowCount} rows.`);
   } catch (err) {
     console.log(err);
@@ -62,11 +62,12 @@ export async function deleteTodo(req: Request, res: Response) {
 
 export async function updateTodoState(req: Request, res: Response) {
   try {
-    const { _id, done } = req.body;
+    const { id } = req.params;
+    const { done } = req.body;
 
-    if (!_id) return res.status(400).send('Missing Todo ID');
+    if (!id) return res.status(400).send('Missing Todo ID');
 
-    const result = await db.query('update todos set completed = $1 where id = $2;', [done, _id]);
+    const result = await db.query('update todos set completed = $1 where id = $2;', [done, id]);
     res.status(200).send(`Updated ${result.rowCount} rows.`);
   } catch (err) {
     console.log(err);

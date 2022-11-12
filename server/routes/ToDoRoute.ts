@@ -6,10 +6,10 @@ const router = Router();
 
 router.get('/', auth, getTodo);
 
-router.post('/addTodo', auth, addTodo);
+router.post('/add', auth, addTodo);
 
-router.delete('/deleteTodo', auth, deleteTodo);
+router.delete('/:id', auth, deleteTodo);
 
-router.put('/update', auth, updateTodoState);
+router.put('/:id', auth, updateTodoState);
 
 export default router;

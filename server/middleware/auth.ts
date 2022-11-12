@@ -1,8 +1,5 @@
-import dotenv from 'dotenv';
 import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import db from '../db';
-dotenv.config();
 
 export interface CustomRequest extends Request {
   userId: number;

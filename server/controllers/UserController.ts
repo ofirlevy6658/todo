@@ -1,7 +1,5 @@
-import { Request, Response } from 'express';
-import dotenv from 'dotenv';
-dotenv.config();
 import bcrypt from 'bcrypt';
+import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import db from '../db';
 
@@ -18,7 +16,6 @@ export const register = async (req: Request, res: Response) => {
     await db.query('INSERT INTO users (email, password, creation_date) VALUES ($1, $2, $3)', [email, encryptedPassword, new Date()]);
 
     res.sendStatus(200);
-
   } catch (error) {
     console.error(error);
     return res.sendStatus(500);

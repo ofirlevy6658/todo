@@ -19,9 +19,8 @@ export const register = async (req: Request, res: Response) => {
 
     res.sendStatus(200);
 
-    const token = jwt.sign({ email }, process.env.JWT_SECRET_STRING!);
   } catch (error) {
-    console.error(error)
+    console.error(error);
     return res.sendStatus(500);
   }
 };
@@ -32,8 +31,9 @@ export const login = async (req: Request, res: Response) => {
     const { rows } = await db.query('select * from users where email = $1', [email]);
     if (rows.length > 0) {
       if (await bcrypt.compare(password, rows[0].password)) {
-        const token = jwt.sign({email}, process.env.JWT_SECRET_STRING!);
-        return res.send({token});
+        const id = rows[0].id;
+        const token = jwt.sign({ id }, process.env.JWT_SECRET_STRING!);
+        return res.send({ token });
       }
     }
   } catch (error) {

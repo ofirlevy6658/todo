@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import db from '../db';
 import { CustomRequest } from '../middleware/auth';
-import { Todo } from '../models/todo';
+import { Todo } from '../models/Todo';
 
 export async function getTodo(req: Request, res: Response) {
   const page = Number(req.query.page);

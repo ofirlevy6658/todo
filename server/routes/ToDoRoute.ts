@@ -1,15 +1,15 @@
-import { Router } from "express";
-
-// import { getToDo, saveToDo, deleteToDo, updateToDo } from "../controllers/ToDoController";
+import { Router } from 'express';
+import { addTodo, deleteTodo, getTodo, updateTodoState } from '../controllers/ToDoController';
+import auth from '../middleware/auth';
 
 const router = Router();
 
-// router.get("/", getToDo);
+router.get('/', auth, getTodo);
 
-// router.post("/save", saveToDo);
+router.post('/addTodo', auth, addTodo);
 
-// router.put("/update", updateToDo);
+router.delete('/deleteTodo', auth, deleteTodo);
 
-// router.delete("/delete", deleteToDo);
+router.put('/update', auth, updateTodoState);
 
 export default router;

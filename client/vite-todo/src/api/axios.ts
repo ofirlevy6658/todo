@@ -1,39 +1,43 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { ITodo } from "../Types";
 
-const baseUrl = axios.create({
+const instance = axios.create({
   baseURL: "http://localhost:5000/",
 });
+instance.defaults.headers.common["Authorization"] = "AUTH_TOKEN";
 
-export interface AxiosResponse<T = any> {
-  data: ITodo;
-  status: number;
-  statusText: string;
-  headers: any;
-  config: AxiosRequestConfig;
-  request?: any;
-}
+// instance.interceptors.response.use(
+//   function (response) {
+//     console.log(response);
+//     return response;
+//   },
+//   function (error) {
+//     console.log(error);
+
+//     return Promise.reject(error);
+//   }
+// );
 
 export const getTodos = async (page = 1) => {
-  const res = await baseUrl.get<ITodo>("", {
+  const res = await instance.get<ITodo>("", {
     params: { page, limit: 7 },
   });
-  return res;
+  return res.data;
 };
 
 export const createTodo = async (taskInputValue: string) => {
-  const res = await baseUrl.post("/save", { desc: taskInputValue });
-  return res;
+  const res = await instance.post("/save", { desc: taskInputValue });
+  return res.data;
 };
 
 export const deleteTodo = async (id: string) => {
-  const res = await baseUrl.delete("/delete", {
+  const res = await instance.delete("/delete", {
     data: { _id: id },
   });
-  return res;
+  return res.data;
 };
 
 export const updateTodo = async (data: { _id: string; done: boolean }) => {
-  const res = await baseUrl.put("http://localhost:5000/update", data);
-  return res;
+  const res = await instance.put("http://localhost:5000/update", data);
+  return res.data;
 };

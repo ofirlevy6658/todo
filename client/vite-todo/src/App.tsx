@@ -1,30 +1,30 @@
-import React from "react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Todo } from "./pages/Todo";
-import { LoginPage } from "./pages/LoginPage";
-import { createBrowserRouter, RouterProvider, Route } from "react-router-dom";
-import { ProtectedRoutes } from "./utils/ProtectedRoutes";
-import { RegisterPage } from "./pages/RegisterPage";
+import React from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { Todo } from './pages/Todo';
+import { LoginPage } from './pages/LoginPage';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { ProtectedRoutes } from './utils/ProtectedRoutes';
+import { RegisterPage } from './pages/RegisterPage';
 
 const queryClient = new QueryClient();
 
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: '/',
     element: <ProtectedRoutes />,
     children: [
       {
-        path: "/",
+        path: '/',
         element: <Todo />,
       },
     ],
   },
   {
-    path: "/login",
+    path: '/login',
     element: <LoginPage />,
   },
   {
-    path: "/register",
+    path: '/register',
     element: <RegisterPage />,
   },
 ]);

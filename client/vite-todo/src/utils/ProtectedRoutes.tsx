@@ -1,9 +1,7 @@
-import React from "react";
-import { Outlet, Navigate } from "react-router-dom";
+import React from 'react';
+import { Outlet, Navigate } from 'react-router-dom';
 
-type Props = {};
-
-export const ProtectedRoutes = (props: Props) => {
-  const token = true;
-  return token ? <Outlet /> : <Navigate to="/login" />;
+export const ProtectedRoutes = () => {
+  const accessToken = sessionStorage.getItem('accessToken');
+  return accessToken ? <Outlet /> : <Navigate to="/login" />;
 };

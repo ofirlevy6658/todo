@@ -17,5 +17,6 @@ app.use(cookieParser());
 
 app.use('/user', userRoutes);
 app.use('/todo', todoRoutes);
+app.use(express.static('public'));
 
 app.listen(PORT, () => console.log('Server running on port ' + PORT));

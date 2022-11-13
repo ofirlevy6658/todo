@@ -15,7 +15,7 @@ export const register = async (req: Request, res: Response) => {
 
     await db.query('INSERT INTO users (email, password, creation_date) VALUES ($1, $2, $3)', [email, encryptedPassword, new Date()]);
 
-    res.sendStatus(200);
+    res.status(201).send('User created');
   } catch (error) {
     console.error(error);
     return res.sendStatus(500);

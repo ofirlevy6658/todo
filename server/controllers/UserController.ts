@@ -2,6 +2,22 @@ import bcrypt from 'bcrypt';
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import db from '../db';
+import { CustomRequest } from '../middleware/auth';
+import User from '../types/User';
+
+export const profile = async (req: Request, res: Response) => {
+  try {
+    const userId = (req as CustomRequest).userId;
+    const result = await db.query('select * from users where id = $1', [userId]);
+    if (result.rowCount === 0) return res.status(404).send('User not found');
+    const user = result.rows[0] as User;
+    user.password = undefined; // Don't send password to client
+    res.status(200).send(user);
+  } catch (err) {
+    console.log(err);
+    res.status(500).send(err);
+  }
+};
 
 export const register = async (req: Request, res: Response) => {
   const { email, password, fullName } = req.body;
@@ -29,7 +45,7 @@ export const login = async (req: Request, res: Response) => {
     if (rows.length > 0) {
       if (await bcrypt.compare(password, rows[0].password)) {
         const id = rows[0].id;
-        const accessToken = jwt.sign({ id }, process.env.JWT_SECRET_STRING!, { expiresIn: '15d' }); // 15 days - dev test only
+        const accessToken = generateAccessToken(id);
         const refreshToken = jwt.sign({ id }, process.env.JWT_SECRET_STRING!, { expiresIn: '7d' });
         res.cookie('rtkn', refreshToken, { httpOnly: true });
 
@@ -42,15 +58,15 @@ export const login = async (req: Request, res: Response) => {
     return res.sendStatus(500);
   }
 
-  return res.sendStatus(403);
+  return res.status(400).send('Invalid Credentials');
 };
 
 export const refresh = async (req: Request, res: Response) => {
   const refreshToken = req.cookies?.rtkn;
-  if (!refreshToken) return res.sendStatus(401);
+  if (!refreshToken) return res.sendStatus(403);
   try {
     const { id } = jwt.verify(refreshToken, process.env.JWT_SECRET_STRING!) as { id: string };
-    const accessToken = jwt.sign({ id }, process.env.JWT_SECRET_STRING!, { expiresIn: '15m' });
+    const accessToken = generateAccessToken(id);
 
     return res.send({ accessToken });
   } catch (error) {
@@ -62,4 +78,20 @@ export const refresh = async (req: Request, res: Response) => {
 export const logout = async (req: Request, res: Response) => {
   res.clearCookie('rtkn');
   res.sendStatus(200);
+};
+
+export const deleteAccount = async (req: Request, res: Response) => {
+  const userId = (req as CustomRequest).userId;
+  try {
+    await db.query('delete from users where id = $1', [userId]);
+    res.clearCookie('rtkn');
+    res.sendStatus(200);
+  } catch (error) {
+    console.error(error);
+    res.sendStatus(500);
+  }
+}
+
+const generateAccessToken = (id: string) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET_STRING!, { expiresIn: '15m' });
 };

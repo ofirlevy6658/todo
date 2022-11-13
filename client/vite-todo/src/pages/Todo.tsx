@@ -36,7 +36,7 @@ export const Todo = () => {
   const deleteTodoMutation = useMutation({
     mutationFn: (id: string) => deleteTodo(id),
     onSuccess: (resp) => {
-      if (data && data.data.todos.length === 1 && page > 1) {
+      if (data?.todos.length === 1 && page > 1) {
         setPage(page - 1);
       }
       refetch();
@@ -165,9 +165,9 @@ export const Todo = () => {
               }}
             >
               <Box>
-                {data?.data ? (
+                {data ? (
                   <CheckboxList
-                    todos={data?.data.todos}
+                    todos={data.todos}
                     onDelete={handleDelete}
                     onToggle={handleToggle}
                   />
@@ -177,11 +177,9 @@ export const Todo = () => {
               </Box>
               <Stack spacing={2}>
                 <Pagination
-                  count={data?.data.totalPages || 1}
+                  count={data?.totalPages || 1}
                   page={
-                    page > (data?.data.totalPages || 1)
-                      ? data?.data.totalPages
-                      : page
+                    page > (data?.totalPages || 1) ? data?.totalPages : page
                   }
                   onChange={(e, v) => setPage(v)}
                   sx={{

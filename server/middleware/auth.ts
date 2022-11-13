@@ -17,6 +17,7 @@ export default async (req: Request, res: Response, next: NextFunction) => {
     next();
   } catch (err) {
     console.error(err);
-    res.sendStatus(500);
+    if (err instanceof jwt.TokenExpiredError) return res.status(401).send('Token expired');
+    return res.sendStatus(403);
   }
 };

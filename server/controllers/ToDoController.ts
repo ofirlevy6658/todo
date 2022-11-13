@@ -74,13 +74,13 @@ export async function deleteTodo(req: Request, res: Response) {
 export async function updateTodoState(req: Request, res: Response) {
   try {
     const { id } = req.params;
-    const { done } = req.body;
+    const { completed } = req.body;
 
     if (!id) return res.status(400).send("Missing Todo ID");
 
     const result = await db.query(
       "update todos set completed = $1 where id = $2;",
-      [done, id]
+      [completed, id]
     );
     res.status(200).send(`Updated ${result.rowCount} rows.`);
   } catch (err) {

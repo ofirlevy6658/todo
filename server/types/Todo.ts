@@ -4,4 +4,5 @@ export interface Todo {
   content: string;
   color?: string;
   wallpaper?: string;
+  completed: boolean;
 }

@@ -1,15 +1,15 @@
-
-
 export type TodoType = {
-  _id: string;
-  desc: string;
-  done: boolean;
-}
-
+  id: number;
+  user_id: number;
+  content: string;
+  color?: string;
+  wallpaper?: string;
+  completed: boolean;
+};
 
 export interface ITodo {
-  todos: TodoType[]
+  todos: TodoType[];
   count: number;
   currentPage: string;
-  totalPages:number;
+  totalPages: number;
 }

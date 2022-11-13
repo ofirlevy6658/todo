@@ -6,7 +6,9 @@ const instance = axios.create({
 });
 const accessToken = sessionStorage.getItem('accessToken');
 
-instance.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+if (accessToken) {
+  instance.defaults.headers.common['Authorization'] = `Bearer ${JSON.parse(accessToken)}`;
+}
 
 // instance.interceptors.response.use(
 //   function (response) {
@@ -27,18 +29,18 @@ export const getTodos = async (page = 1) => {
   return res.data;
 };
 
-export const createTodo = async (taskInputValue: string) => {
-  const res = await instance.post('/todo/add', { desc: taskInputValue });
+export const createTodo = async (content: string) => {
+  const res = await instance.post('/todo/add', { content });
   return res.data;
 };
 
-export const deleteTodo = async (id: string) => {
+export const deleteTodo = async (id: number) => {
   const res = await instance.delete(`/todo/${id}`);
   return res.data;
 };
 
-export const updateTodo = async (data: { id: string; completed: boolean }) => {
-  const res = await instance.put(`todo/${data.id}`, data.completed);
+export const updateTodo = async (data: { id: number; completed: boolean }) => {
+  const res = await instance.put(`todo/${data.id}`, { completed: data.completed });
   return res.data;
 };
 

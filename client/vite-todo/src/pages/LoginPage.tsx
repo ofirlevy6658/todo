@@ -9,6 +9,7 @@ import { loginReq } from '../api/axios';
 import { BootstrapInput } from '../ui/BootstrapInput';
 import { Navigate, useNavigate } from 'react-router-dom';
 import useSessionStorage from '../hooks/useSessionStorage';
+import { useLocalStorage } from 'usehooks-ts';
 
 type Inputs = {
   email: string;
@@ -25,10 +26,13 @@ const schema = yup
   .required();
 
 export const LoginPage = () => {
-  const [accessToken, setAccessToken] = useSessionStorage('accessToken', '');
+  const [accessTokenSessionStorage, setAccessTokenSessionStorage] = useSessionStorage('accessToken', '');
+  const [accessTokenLocalStorage, setAccessTokenLocalStorage] = useLocalStorage('accessToken', '');
+
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<Inputs>({
     resolver: yupResolver(schema),
@@ -39,7 +43,7 @@ export const LoginPage = () => {
   const loginMutate = useMutation({
     mutationFn: (credinatils: { email: string; password: string }) => loginReq(credinatils),
     onSuccess: (resp: { accessToken: string }) => {
-      setAccessToken(resp.accessToken);
+      watch('rememberMe') ? setAccessTokenLocalStorage(resp.accessToken) : setAccessTokenSessionStorage(resp.accessToken);
     },
   });
 
@@ -51,7 +55,7 @@ export const LoginPage = () => {
     navigate('/register');
   };
 
-  if (accessToken) {
+  if (accessTokenSessionStorage ?? accessTokenLocalStorage) {
     return <Navigate to="/" replace={true} />;
   }
   return (

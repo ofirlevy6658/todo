@@ -1,19 +1,26 @@
-import bcrypt from 'bcrypt';
-import { Request, Response } from 'express';
-import jwt from 'jsonwebtoken';
-import db from '../db';
+import bcrypt from "bcrypt";
+import { Request, Response } from "express";
+import jwt from "jsonwebtoken";
+import db from "../db";
 
 export const register = async (req: Request, res: Response) => {
   const { email, password } = req.body;
-  if (!email || !password) return res.status(400).send('Missing Required Fields.');
+  console.log(email);
+  if (!email || !password)
+    return res.status(400).send("Missing Required Fields.");
 
   try {
-    const { rows } = await db.query('select * from users where email = $1', [email]);
-    if (rows.length > 0) return res.status(400).send('Email already exists');
+    const { rows } = await db.query("select * from users where email = $1", [
+      email,
+    ]);
+    if (rows.length > 0) return res.status(400).send("Email already exists");
 
     const encryptedPassword = await bcrypt.hash(password, 12);
 
-    await db.query('INSERT INTO users (email, password, creation_date) VALUES ($1, $2, $3)', [email, encryptedPassword, new Date()]);
+    await db.query(
+      "INSERT INTO users (email, password, creation_date) VALUES ($1, $2, $3)",
+      [email, encryptedPassword, new Date()]
+    );
 
     res.sendStatus(200);
   } catch (error) {
@@ -23,9 +30,13 @@ export const register = async (req: Request, res: Response) => {
 };
 
 export const login = async (req: Request, res: Response) => {
+  console.log("ateteet");
   const { email, password } = req.body;
   try {
-    const { rows } = await db.query('select * from users where email = $1', [email]);
+    console.log("test");
+    const { rows } = await db.query("select * from users where email = $1", [
+      email,
+    ]);
     if (rows.length > 0) {
       if (await bcrypt.compare(password, rows[0].password)) {
         const id = rows[0].id;

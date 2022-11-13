@@ -41,3 +41,20 @@ export const updateTodo = async (data: { _id: string; done: boolean }) => {
   const res = await instance.put("http://localhost:5000/update", data);
   return res.data;
 };
+
+export const loginReq = async (credinatils: {
+  email: string;
+  password: string;
+}) => {
+  const res = await instance.post("user/login", credinatils);
+  return res.data;
+};
+
+export const registerReq = async (credinatils: {
+  fullName: string;
+  email: string;
+  password: string;
+}) => {
+  const res = await instance.post("user/register", credinatils);
+  return res.data;
+};

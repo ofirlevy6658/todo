@@ -16,26 +16,28 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useMutation } from "@tanstack/react-query";
-import { loginReq } from "../api/axios";
+import { registerReq } from "../api/axios";
 import { BootstrapInput } from "../ui/BootstrapInput";
-import { Navigate, useNavigate } from "react-router-dom";
-
+import { useNavigate } from "react-router-dom";
 type Inputs = {
+  fullName: string;
   email: string;
   password: string;
-  rememberMe: boolean;
 };
 
 const schema = yup
   .object({
+    fullName: yup
+      .string()
+      .min(2, "Full name must be at least 2 characters")
+      .max(16)
+      .required(),
     email: yup.string().email().required(),
     password: yup.string().required().min(6).max(12),
-    rememberMe: yup.boolean(),
   })
   .required();
 
-export const LoginPage = () => {
-  const [isToken, setIsToken] = React.useState(false);
+export const RegisterPage = () => {
   const {
     register,
     handleSubmit,
@@ -46,25 +48,25 @@ export const LoginPage = () => {
 
   const navigate = useNavigate();
 
-  const loginMutate = useMutation({
-    mutationFn: (credinatils: { email: string; password: string }) =>
-      loginReq(credinatils),
+  const registerMutate = useMutation({
+    mutationFn: (credinatils: {
+      fullName: string;
+      email: string;
+      password: string;
+    }) => registerReq(credinatils),
     onSuccess: (resp) => {
-      setIsToken(true);
+      console.log(resp);
     },
   });
 
   const onSubmit: SubmitHandler<Inputs> = (credinatils) => {
-    console.log(credinatils);
-    loginMutate.mutate(credinatils);
+    registerMutate.mutate(credinatils);
   };
+
   const handleNavigate = () => {
-    navigate("/register");
+    navigate("/login");
   };
-  console.log(isToken);
-  if (isToken) {
-    return <Navigate to="/" replace={true} />;
-  }
+
   return (
     <Box
       sx={{
@@ -76,20 +78,35 @@ export const LoginPage = () => {
         "& > :not(style)": {
           m: 1,
           width: 350,
-          height: 500,
+          height: 600,
         },
       }}
     >
       <Paper elevation={24}>
         <Box sx={{ p: "35px" }}>
           <Typography variant="h6" color={grey[600]}>
-            Login
+            Register
           </Typography>
           <Box
             component={"form"}
             onSubmit={handleSubmit(onSubmit)}
             sx={{ mt: "25px" }}
           >
+            {/* full name */}
+            <FormControl variant="standard" sx={{ mt: "10px" }}>
+              <InputLabel shrink htmlFor="fullname-input">
+                Full Name
+              </InputLabel>
+              <BootstrapInput
+                id="fullname-input"
+                placeholder="Jon Voight"
+                {...register("fullName")}
+              />
+              <FormHelperText error id="email-input" sx={{ height: "20px" }}>
+                {errors.fullName?.message}
+              </FormHelperText>
+            </FormControl>
+            {/* email */}
             <FormControl variant="standard" sx={{ mt: "10px" }}>
               <InputLabel shrink htmlFor="email-input">
                 Email
@@ -103,22 +120,22 @@ export const LoginPage = () => {
                 {errors.email?.message}
               </FormHelperText>
             </FormControl>
-            {/*  */}
+            {/*password*/}
             <FormControl variant="standard" sx={{ mt: "10px" }}>
               <InputLabel shrink htmlFor="password-input">
                 Password
               </InputLabel>
               <BootstrapInput
                 id="password-input"
-                type="password"
                 placeholder="*******"
                 {...register("password")}
+                type="password"
               />
               <FormHelperText error id="password-input" sx={{ height: "20px" }}>
                 {errors.password?.message}
               </FormHelperText>
             </FormControl>
-            <FormControlLabel
+            {/* <FormControlLabel
               control={
                 <Checkbox
                   sx={{
@@ -127,11 +144,10 @@ export const LoginPage = () => {
                       color: pink[600],
                     },
                   }}
-                  {...register("rememberMe")}
                 />
               }
               label="Remember me?"
-            />
+            /> */}
             <Button
               sx={{
                 mt: 4,
@@ -144,21 +160,21 @@ export const LoginPage = () => {
               variant="contained"
               type="submit"
             >
-              Login
+              register
             </Button>
           </Box>
           <Box sx={{ mt: "35px" }}>
             <Divider variant="middle" />
             <Divider variant="middle" />
             <Typography sx={{ mt: "15px", textAlign: "center" }}>
-              Don't have an Account?
+              Already have an Account?
               <Box
                 component="span"
                 sx={{ fontWeight: "bold", cursor: "pointer" }}
                 onClick={handleNavigate}
               >
                 {" "}
-                Sign up
+                Login
               </Box>
             </Typography>
           </Box>

@@ -4,6 +4,7 @@ import { Todo } from "./pages/Todo";
 import { LoginPage } from "./pages/LoginPage";
 import { createBrowserRouter, RouterProvider, Route } from "react-router-dom";
 import { ProtectedRoutes } from "./utils/ProtectedRoutes";
+import { RegisterPage } from "./pages/RegisterPage";
 
 const queryClient = new QueryClient();
 
@@ -21,6 +22,10 @@ const router = createBrowserRouter([
   {
     path: "/login",
     element: <LoginPage />,
+  },
+  {
+    path: "/register",
+    element: <RegisterPage />,
   },
 ]);
 

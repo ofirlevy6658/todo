@@ -4,6 +4,6 @@ import { Outlet, Navigate } from "react-router-dom";
 type Props = {};
 
 export const ProtectedRoutes = (props: Props) => {
-  const token = true;
+  const token = false;
   return token ? <Outlet /> : <Navigate to="/login" />;
 };

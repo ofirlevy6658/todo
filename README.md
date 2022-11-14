@@ -1,5 +1,7 @@
 # To-Do List 
-To-Do List full stack web application created with Vite React TS React Query and MUI 5, and for the backend Express mongoose (mongodb)
+To-Do List full stack web application created with 
+frontend - Vite React TS React Query,useForm and MUI 5, 
+Backend - TS Express PostgreSQL
 
 Instructions to run the app
 * Backend

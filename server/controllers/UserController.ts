@@ -93,5 +93,5 @@ export const deleteAccount = async (req: Request, res: Response) => {
 };
 
 const generateAccessToken = (id: string) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET_STRING!, { expiresIn: '15m' });
+  return jwt.sign({ id }, process.env.JWT_SECRET_STRING!, { expiresIn: '50min' });
 };

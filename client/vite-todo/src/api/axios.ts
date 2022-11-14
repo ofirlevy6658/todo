@@ -20,7 +20,8 @@ axiosInstance.interceptors.response.use(
     if (axios.isAxiosError(error)) {
       if (error.response?.status === 401 || error.response?.status === 403) {
         localStorage.clear();
-        // router.navigate('/', { replace: true });
+        sessionStorage.clear();
+        router.navigate('/login', { replace: true });
       }
     }
     return Promise.reject(error);

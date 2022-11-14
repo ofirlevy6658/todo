@@ -55,7 +55,6 @@ export const LoginPage = () => {
   const handleNavigate = () => {
     navigate('/register');
   };
-  console.log(accessTokenLocalStorage);
 
   if (accessTokenSessionStorage || accessTokenLocalStorage) {
     return <Navigate to="/" replace={true} />;

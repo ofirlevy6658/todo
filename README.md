@@ -1,7 +1,7 @@
 # To-Do List 
 To-Do List full stack web application created with 
 frontend - Vite React TS React Query,useForm and MUI 5, 
-Backend - TS Express PostgreSQL
+Backend - TS Express jsonwebtoken PostgreSQL
 
 Instructions to run the app
 * Backend

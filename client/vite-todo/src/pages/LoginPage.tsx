@@ -5,7 +5,7 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useMutation } from '@tanstack/react-query';
-import { loginReq } from '../api/axios';
+import { axiosInstance, loginReq } from '../api/axios';
 import { BootstrapInput } from '../ui/BootstrapInput';
 import { Navigate, useNavigate } from 'react-router-dom';
 import useSessionStorage from '../hooks/useSessionStorage';
@@ -44,6 +44,7 @@ export const LoginPage = () => {
     mutationFn: (credinatils: { email: string; password: string }) => loginReq(credinatils),
     onSuccess: (resp: { accessToken: string }) => {
       watch('rememberMe') ? setAccessTokenLocalStorage(resp.accessToken) : setAccessTokenSessionStorage(resp.accessToken);
+      axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${resp.accessToken}`;
     },
   });
 
@@ -54,8 +55,9 @@ export const LoginPage = () => {
   const handleNavigate = () => {
     navigate('/register');
   };
+  console.log(accessTokenLocalStorage);
 
-  if (accessTokenSessionStorage ?? accessTokenLocalStorage) {
+  if (accessTokenSessionStorage || accessTokenLocalStorage) {
     return <Navigate to="/" replace={true} />;
   }
   return (

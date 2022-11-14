@@ -17,7 +17,7 @@ export interface IProps {
 export const CheckboxList = ({ todos, onDelete, onToggle }: IProps) => {
   return (
     <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
-      {todos.map((todo) => {
+      {todos.map((todo: TodoType) => {
         const labelId = `checkbox-list-label-${todo.id}`;
 
         return (

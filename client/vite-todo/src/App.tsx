@@ -8,7 +8,7 @@ import { RegisterPage } from './pages/RegisterPage';
 
 const queryClient = new QueryClient();
 
-const router = createBrowserRouter([
+export const router = createBrowserRouter([
   {
     path: '/',
     element: <ProtectedRoutes />,

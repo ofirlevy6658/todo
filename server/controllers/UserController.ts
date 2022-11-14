@@ -29,7 +29,7 @@ export const login = async (req: Request, res: Response) => {
     if (rows.length > 0) {
       if (await bcrypt.compare(password, rows[0].password)) {
         const id = rows[0].id;
-        const accessToken = jwt.sign({ id }, process.env.JWT_SECRET_STRING!, { expiresIn: '15d' }); // 15 days - dev test only
+        const accessToken = jwt.sign({ id }, process.env.JWT_SECRET_STRING!, { expiresIn: 60 }); // 15 days - dev test only
         const refreshToken = jwt.sign({ id }, process.env.JWT_SECRET_STRING!, { expiresIn: '7d' });
         res.cookie('rtkn', refreshToken, { httpOnly: true });
 

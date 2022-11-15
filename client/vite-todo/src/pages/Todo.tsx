@@ -12,6 +12,7 @@ import { CheckboxList } from '../components/CheckboxList';
 import { CircularProgress, Typography } from '@mui/material';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { getTodos, createTodo, deleteTodo, updateTodo } from '../api/axios';
+import { SideBar } from '../components/SideBar';
 
 export const Todo = () => {
   const [open, setOpen] = useState(false);
@@ -100,6 +101,19 @@ export const Todo = () => {
     setOpen(false);
   };
 
+  return (
+    <>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100vh',
+        }}>
+        <SideBar />
+      </Box>
+    </>
+  );
   return (
     <>
       <Box

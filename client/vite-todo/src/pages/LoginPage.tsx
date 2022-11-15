@@ -6,7 +6,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useMutation } from '@tanstack/react-query';
 import { axiosInstance, loginReq } from '../api/axios';
-import { BootstrapInput } from '../ui/BootstrapInput';
+import { BootstrapInput } from '../ui/StyledInputs';
 import { Navigate, useNavigate } from 'react-router-dom';
 import useSessionStorage from '../hooks/useSessionStorage';
 import { useLocalStorage } from 'usehooks-ts';

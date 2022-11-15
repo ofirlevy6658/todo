@@ -1,10 +1,13 @@
 import { Router } from 'express';
-import { addTodo, deleteTodo, getTodo, updateTodoState } from '../controllers/ToDoController';
+import { addTodo, deleteTodo, getTodo, getTodoByListId, searchTodo, updateTodoState } from '../controllers/ToDoController';
 import auth from '../middleware/auth';
 
 const router = Router();
 
 router.get('/', auth, getTodo);
+router.get('/list/:listId', auth, getTodoByListId);
+
+router.get('/search', auth, searchTodo);
 
 router.post('/add', auth, addTodo);
 

@@ -28,13 +28,12 @@ export const SideBar = () => {
           <Divider />
         </Box>
       </Box>
-      <Box sx={{ flex: '6' }}>
-        {/* <p>test</p> */}
+      <Box sx={{ flex: '6', minHeight: 200 }}>
         <VirtualizedList />
       </Box>
-      <Box sx={{ flex: 0.5, mx: 'auto' }}>
-        <Divider />
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+      <Divider />
+      <Box sx={{ flex: 0.5, display: 'flex' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'start' }}>
           <AddIcon fontSize="small" sx={{ px: 1, cursor: 'pointer' }} />
           <SearchInput placeholder="New list" />
         </Box>

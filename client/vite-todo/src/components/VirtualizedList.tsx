@@ -20,7 +20,7 @@ function renderRow(props: ListChildComponentProps) {
 
 export function VirtualizedList() {
   return (
-    <Box sx={{ width: '100%', height: 500, overflowY: 'scroll' }}>
+    <Box sx={{ width: '100%', height: '100%', overflowY: 'scroll' }}>
       {[1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23].map((e, index) => (
         <ListItem key={index} component="div" disablePadding>
           <ListItemButton>

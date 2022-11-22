@@ -26,7 +26,7 @@ export async function getLists(req: Request, res: Response) {
     } else {
       const listsTotal = await db.query('select count(*) from lists where user_id = $1', [userId]);
       const { rows } = await db.query('select * from lists where user_id = $1 limit $2 offset $3', [userId, limit, (+page - 1) * +limit]);
-      return res.status(200).send({ rows, count: listsTotal.rows[0].count });
+      return res.status(200).send({ rows, count: +listsTotal.rows[0].count });
     }
   } catch (error) {
     console.error(error);

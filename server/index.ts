@@ -1,4 +1,5 @@
 require('dotenv').config();
+const listEndpoints = require('express-list-endpoints');
 import cors from 'cors';
 import morgan from 'morgan';
 import express from 'express';
@@ -18,5 +19,7 @@ app.use(cookieParser());
 app.use('/user', userRoutes);
 app.use('/todo', todoRoutes);
 app.use(express.static('public'));
+
+console.table(listEndpoints(app));
 
 app.listen(PORT, () => console.log('Server running on port ' + PORT));

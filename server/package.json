@@ -23,6 +23,7 @@
     "@types/morgan": "^1.9.3",
     "@types/node": "^18.11.9",
     "@types/pg": "^8.6.5",
+    "express-list-endpoints": "^6.0.0",
     "nodemon": "^2.0.20",
     "prettier": "^2.7.1",
     "ts-node": "^10.9.1",

@@ -29,7 +29,7 @@ export async function getTodo(req: Request, res: Response) {
 export async function getTodoByListId(req: Request, res: Response) {
   const page = Number(req.query.page);
   const limit = Number(req.query.limit);
-  const listId  = Number(req.params.listId);
+  const listId = Number(req.params.listId);
 
   const userId = (req as CustomRequest).userId;
 
@@ -61,7 +61,11 @@ export async function addTodo(req: Request, res: Response) {
 
     isImportant = isImportant || false;
 
-    const todoId = await db.query('insert into todos (user_id, content, color, list_id, is_important) values ($1,$2,$3,$4,$5) RETURNING id', [userId, content, color, listId, isImportant]);
+    const todoId = await db.query(
+      `insert into todos (user_id, content, color, list_id, is_important) 
+    select $1,$2,$3,$4,$5 where exists (select 1 from lists where id = $4 and user_id = $1) returning id`,
+      [userId, content, color, listId, isImportant]
+    );
 
     res.status(201).send({ id: todoId.rows[0].id });
   } catch (err) {

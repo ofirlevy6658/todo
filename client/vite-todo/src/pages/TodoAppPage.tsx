@@ -12,9 +12,10 @@ import { CheckboxList } from '../components/CheckboxList';
 import { CircularProgress, Typography } from '@mui/material';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { getTodos, createTodo, deleteTodo, updateTodo } from '../api/axios';
-import { SideBar } from '../components/SideBar';
+import { SideToolBar } from '../components/SideToolBar';
+import { TodoList } from '../components/TodoList';
 
-export const Todo = () => {
+export const TodoAppPage = () => {
   const [open, setOpen] = useState(false);
   const [page, setPage] = useState(1);
   const [taskInputValue, setTaskInputValue] = useState('');
@@ -109,8 +110,10 @@ export const Todo = () => {
           justifyContent: 'center',
           alignItems: 'center',
           height: '100vh',
+          border: '1px solid black',
         }}>
-        <SideBar />
+        <SideToolBar />
+        <TodoList />
       </Box>
     </>
   );

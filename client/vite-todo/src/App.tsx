@@ -1,6 +1,6 @@
 import React from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Todo } from './pages/Todo';
+import { TodoAppPage } from './pages/TodoAppPage';
 import { LoginPage } from './pages/LoginPage';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { ProtectedRoutes } from './utils/ProtectedRoutes';
@@ -15,7 +15,7 @@ export const router = createBrowserRouter([
     children: [
       {
         path: '/',
-        element: <Todo />,
+        element: <TodoAppPage />,
       },
     ],
   },

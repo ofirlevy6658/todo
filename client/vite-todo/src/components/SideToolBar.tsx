@@ -6,11 +6,11 @@ import { VirtualizedList } from './VirtualizedList';
 import AddIcon from '@mui/icons-material/Add';
 import { SearchInput } from '../ui/StyledInputs';
 
-export const SideBar = () => {
+export const SideToolBar = () => {
   return (
     <Box sx={{ height: '100%', maxHeight: 800, minHeight: 400, width: 250, bgcolor: grey['A100'], display: 'flex', flexDirection: 'column' }}>
-      <Box sx={{ flex: 2 }}>
-        <Box sx={{ padding: 3 }}>
+      <Box sx={{ flex: 1 }}>
+        <Box sx={{ padding: 3, paddingBottom: 0 }}>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Avatar sx={{ bgcolor: deepPurple[500], marginRight: 3, width: 40, height: 40 }}>OL</Avatar>
             <Box>
@@ -32,7 +32,7 @@ export const SideBar = () => {
         <VirtualizedList />
       </Box>
       <Divider />
-      <Box sx={{ flex: 0.5, display: 'flex' }}>
+      <Box sx={{ flex: 0.5, display: 'flex', minHeight: '50px' }}>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'start' }}>
           <AddIcon fontSize="small" sx={{ px: 1, cursor: 'pointer' }} />
           <SearchInput placeholder="New list" />

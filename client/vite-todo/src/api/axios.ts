@@ -28,9 +28,9 @@ axiosInstance.interceptors.response.use(
   }
 );
 
-export const getTodos = async (page = 1) => {
+export const getTodos = async ({ pageParam = 1 }) => {
   const res = await axiosInstance.get<ITodo>('/todo', {
-    params: { page, limit: 7 },
+    params: { page: pageParam, limit: 7 },
   });
   return res.data;
 };

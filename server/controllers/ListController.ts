@@ -17,10 +17,17 @@ export async function addList(req: Request, res: Response) {
 }
 
 export async function getLists(req: Request, res: Response) {
+  const { page, limit } = req.query;
   const userId = (req as CustomRequest).userId;
   try {
-    const { rows } = await db.query('select * from lists where user_id = $1', [userId]);
-    return res.status(200).send(rows);
+    if (!page || !limit) {
+      const { rows } = await db.query('select * from lists where user_id = $1', [userId]);
+      return res.status(200).send(rows);
+    } else {
+      const listsTotal = await db.query('select count(*) from lists where user_id = $1', [userId]);
+      const { rows } = await db.query('select * from lists where user_id = $1 limit $2 offset $3', [userId, limit, (+page - 1) * +limit]);
+      return res.status(200).send({ rows, count: listsTotal.rows[0].count });
+    }
   } catch (error) {
     console.error(error);
     return res.sendStatus(500);
@@ -40,7 +47,6 @@ export async function deleteList(req: Request, res: Response) {
     return res.sendStatus(500);
   }
 }
-
 
 // TODO update only necessary fields
 export async function updateList(req: Request, res: Response) {

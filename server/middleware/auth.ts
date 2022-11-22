@@ -6,7 +6,7 @@ export interface CustomRequest extends Request {
   userId: number;
 }
 
-export default async (req: Request, res: Response, next: NextFunction) => {
+export default async function auth (req: Request, res: Response, next: NextFunction) {
   try {
     const token = req.headers.authorization?.replace('Bearer ', '');
 

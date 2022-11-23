@@ -18,7 +18,6 @@ export function TodoList() {
     getNextPageParam: (lastPage, allPages) => {
       const limit = 20;
       const lastPageNum = Math.ceil(lastPage.count / limit);
-      console.log(Math.ceil(lastPage.count / limit));
       return lastPageNum > allPages.length ? allPages.length + 1 : undefined;
     },
   });

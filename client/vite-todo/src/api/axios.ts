@@ -36,6 +36,11 @@ export const getList = async ({ pageParam = 1 }) => {
   return res.data;
 };
 
+export const addList = async (name: string) => {
+  const res = await axiosInstance.post<ILists>('/list', { name });
+  return res.data;
+};
+
 export const getTodos = async ({ pageParam = 1 }) => {
   const res = await axiosInstance.get<ITodo>('/todo', {
     params: { page: pageParam, limit: 7 },

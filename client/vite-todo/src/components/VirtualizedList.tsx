@@ -3,31 +3,24 @@ import Box from '@mui/material/Box';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
-import { FixedSizeList, ListChildComponentProps } from 'react-window';
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
-import { getTodos } from '../api/axios';
+// import { FixedSizeList } from 'react-window';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { getList } from '../api/axios';
 import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
+import { CircularProgress } from '@mui/material';
 
-function renderRow(props: ListChildComponentProps) {
-  const { index, style } = props;
-  console.log(index);
-  console.log(style);
-  return (
-    <ListItem style={style} key={index} component="div" disablePadding>
-      <ListItemButton>
-        <ListItemText primary={`Item ${index + 1}`} />
-      </ListItemButton>
-    </ListItem>
-  );
-}
-
-export function VirtualizedList() {
+export function TodoList() {
   const { ref, inView } = useInView();
 
-  const { status, data, error, isFetching, isFetchingNextPage, isFetchingPreviousPage, fetchNextPage, fetchPreviousPage, hasNextPage, hasPreviousPage } = useInfiniteQuery(['projects'], getTodos, {
-    getPreviousPageParam: (firstPage) => firstPage.currentPage ?? undefined,
-    getNextPageParam: (lastPage) => lastPage.currentPage ?? undefined,
+  const { status, data, error, isFetching, isFetchingNextPage, isFetchingPreviousPage, fetchNextPage, fetchPreviousPage, hasNextPage, hasPreviousPage } = useInfiniteQuery(['lists'], getList, {
+    getPreviousPageParam: (firstPage, allPages) => (allPages.length > 1 ? allPages.length - 1 : undefined),
+    getNextPageParam: (lastPage, allPages) => {
+      const limit = 20;
+      const lastPageNum = Math.ceil(lastPage.count / limit);
+      console.log(Math.ceil(lastPage.count / limit));
+      return lastPageNum > allPages.length ? allPages.length + 1 : undefined;
+    },
   });
 
   useEffect(() => {
@@ -35,16 +28,29 @@ export function VirtualizedList() {
       fetchNextPage();
     }
   }, [inView]);
-  console.log(data);
+
   return (
-    <Box sx={{ width: '100%', height: '100%', overflowY: 'scroll' }}>
-      {data?.pages.map((list, index) => (
-        <ListItem key={index} component="div" disablePadding>
-          <ListItemButton>
-            <ListItemText primary={`Item ${index + 1}`} />
-          </ListItemButton>
-        </ListItem>
-      ))}
-    </Box>
+    <>
+      <Box sx={{ width: '100%', height: '100%', overflowY: 'scroll' }}>
+        {data?.pages.map((page, i) => (
+          <React.Fragment key={i}>
+            {page.rows.map((list) => (
+              <ListItem component="div" disablePadding key={list.id}>
+                <ListItemButton>
+                  <ListItemText primary={`${list.name}`} />
+                </ListItemButton>
+              </ListItem>
+            ))}
+          </React.Fragment>
+        ))}
+        {hasNextPage && (
+          <ListItem component="div" disablePadding ref={ref}>
+            <ListItemButton sx={{ height: 48 }}>
+              <CircularProgress size={20} sx={{ mx: 'auto' }} />
+            </ListItemButton>
+          </ListItem>
+        )}
+      </Box>
+    </>
   );
 }

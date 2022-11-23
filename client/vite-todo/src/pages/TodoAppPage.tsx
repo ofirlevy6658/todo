@@ -110,7 +110,7 @@ export const TodoAppPage = () => {
           justifyContent: 'center',
           alignItems: 'center',
           height: '100vh',
-          border: '1px solid black',
+          // border: '1px solid black',
         }}>
         <SideToolBar />
         <TodoList />

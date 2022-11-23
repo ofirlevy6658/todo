@@ -2,7 +2,7 @@ import React from 'react';
 import { Avatar, Box, Typography, Divider, IconButton } from '@mui/material';
 import { grey, deepPurple } from '@mui/material/colors';
 import { Search } from './Search';
-import { VirtualizedList } from './VirtualizedList';
+import { TodoList } from './VirtualizedList';
 import AddIcon from '@mui/icons-material/Add';
 import { SearchInput } from '../ui/StyledInputs';
 
@@ -29,7 +29,7 @@ export const SideToolBar = () => {
         </Box>
       </Box>
       <Box sx={{ flex: '6', minHeight: 200 }}>
-        <VirtualizedList />
+        <TodoList />
       </Box>
       <Divider />
       <Box sx={{ flex: 0.5, display: 'flex', minHeight: '50px' }}>

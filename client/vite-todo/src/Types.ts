@@ -13,3 +13,11 @@ export interface ITodo {
   currentPage: string;
   totalPages: number;
 }
+
+export interface ILists {
+  rows: {
+    name: number;
+    id: number;
+  }[];
+  count: number;
+}

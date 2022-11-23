@@ -1,3 +1,4 @@
+import { ILists } from './../Types';
 import { router } from './../App';
 import axios from 'axios';
 import { ITodo } from '../Types';
@@ -27,6 +28,13 @@ axiosInstance.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+export const getList = async ({ pageParam = 1 }) => {
+  const res = await axiosInstance.get<ILists>('/list', {
+    params: { page: pageParam, limit: 20 },
+  });
+  return res.data;
+};
 
 export const getTodos = async ({ pageParam = 1 }) => {
   const res = await axiosInstance.get<ITodo>('/todo', {

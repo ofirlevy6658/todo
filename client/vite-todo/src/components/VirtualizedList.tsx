@@ -3,16 +3,14 @@ import Box from '@mui/material/Box';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
-// import { FixedSizeList } from 'react-window';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { getList } from '../api/axios';
 import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { CircularProgress } from '@mui/material';
+import { useVirtualizer } from '@tanstack/react-virtual';
 
 export function TodoList() {
-  const { ref, inView } = useInView();
-
   const { status, data, error, isFetching, isFetchingNextPage, isFetchingPreviousPage, fetchNextPage, fetchPreviousPage, hasNextPage, hasPreviousPage } = useInfiniteQuery(['lists'], getList, {
     getPreviousPageParam: (firstPage, allPages) => (allPages.length > 1 ? allPages.length - 1 : undefined),
     getNextPageParam: (lastPage, allPages) => {
@@ -22,33 +20,64 @@ export function TodoList() {
     },
   });
 
+  const allRows = data?.pages.map((page) => page.rows).flat() ?? [];
+
+  const parentRef = React.useRef();
+
+  const rowVirtualizer = useVirtualizer({
+    count: hasNextPage ? allRows.length + 1 : allRows.length,
+    getScrollElement: () => parentRef.current,
+    estimateSize: () => 48,
+    overscan: 5,
+  });
   useEffect(() => {
-    if (inView) {
+    const [lastItem] = [...rowVirtualizer.getVirtualItems()].reverse();
+
+    if (!lastItem) {
+      return;
+    }
+
+    if (lastItem.index >= allRows.length - 1 && hasNextPage && !isFetchingNextPage) {
       fetchNextPage();
     }
-  }, [inView]);
+  }, [hasNextPage, fetchNextPage, allRows.length, isFetchingNextPage, rowVirtualizer.getVirtualItems()]);
+
+  if (allRows.length === 0) return <></>;
 
   return (
     <>
-      <Box sx={{ width: '100%', height: '100%', overflowY: 'scroll' }}>
-        {data?.pages.map((page, i) => (
-          <React.Fragment key={i}>
-            {page.rows.map((list) => (
-              <ListItem component="div" disablePadding key={list.id}>
-                <ListItemButton>
-                  <ListItemText primary={`${list.name}`} />
-                </ListItemButton>
-              </ListItem>
-            ))}
-          </React.Fragment>
-        ))}
-        {hasNextPage && (
-          <ListItem component="div" disablePadding ref={ref}>
-            <ListItemButton sx={{ height: 48 }}>
-              <CircularProgress size={20} sx={{ mx: 'auto' }} />
-            </ListItemButton>
-          </ListItem>
-        )}
+      <Box sx={{ width: '100%', height: '100%', overflowY: 'scroll' }} ref={parentRef}>
+        <Box
+          style={{
+            height: `${rowVirtualizer.getTotalSize()}px`,
+            width: '100%',
+            position: 'relative',
+          }}>
+          {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+            const isLoaderRow = virtualRow.index > allRows.length - 1;
+            const todoList = allRows[virtualRow.index];
+
+            return (
+              <Box
+                key={todoList?.id ?? virtualRow.index}
+                style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: `${virtualRow.size}px`, transform: `translateY(${virtualRow.start}px)` }}>
+                {!isLoaderRow ? (
+                  <ListItem component="div" disablePadding>
+                    <ListItemButton>
+                      <ListItemText primary={`${todoList.name}`} />
+                    </ListItemButton>
+                  </ListItem>
+                ) : (
+                  <ListItem component="div" disablePadding>
+                    <ListItemButton>
+                      <CircularProgress size={20} sx={{ mx: 'auto' }} />
+                    </ListItemButton>
+                  </ListItem>
+                )}
+              </Box>
+            );
+          })}
+        </Box>
       </Box>
     </>
   );

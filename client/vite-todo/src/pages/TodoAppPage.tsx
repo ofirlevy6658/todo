@@ -24,9 +24,9 @@ export const TodoAppPage = () => {
     severity: AlertColor;
   }>({ severity: 'success', msg: '' });
 
-  const { data, refetch } = useQuery(['todos', page], () => getTodos(page), {
-    keepPreviousData: true,
-  });
+  // const { data, refetch } = useQuery(['todos', page], () => getTodos(page), {
+  //   keepPreviousData: true,
+  // });
 
   const addTodoMutation = useMutation({
     mutationFn: (inputValue: string) => createTodo(inputValue),

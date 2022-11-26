@@ -6,9 +6,10 @@ import ListItemText from '@mui/material/ListItemText';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { getList } from '../api/axios';
 import { useEffect } from 'react';
-import { useInView } from 'react-intersection-observer';
 import { CircularProgress } from '@mui/material';
 import { useVirtualizer } from '@tanstack/react-virtual';
+import { Link, useParams } from 'react-router-dom';
+import { blueGrey } from '@mui/material/colors';
 
 export function TodoList() {
   const { status, data, error, isFetching, isFetchingNextPage, isFetchingPreviousPage, fetchNextPage, fetchPreviousPage, hasNextPage, hasPreviousPage } = useInfiniteQuery(['lists'], getList, {
@@ -19,6 +20,7 @@ export function TodoList() {
       return lastPageNum > allPages.length ? allPages.length + 1 : undefined;
     },
   });
+  const { id } = useParams();
 
   const allRows = data?.pages.map((page) => page.rows).flat() ?? [];
 
@@ -56,17 +58,28 @@ export function TodoList() {
           {rowVirtualizer.getVirtualItems().map((virtualRow) => {
             const isLoaderRow = virtualRow.index > allRows.length - 1;
             const todoList = allRows[virtualRow.index];
-
             return (
               <Box
                 key={todoList?.id ?? virtualRow.index}
                 style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: `${virtualRow.size}px`, transform: `translateY(${virtualRow.start}px)` }}>
                 {!isLoaderRow ? (
-                  <ListItem component="div" disablePadding>
-                    <ListItemButton>
-                      <ListItemText primary={`${todoList.name}`} />
-                    </ListItemButton>
-                  </ListItem>
+                  <Link to={`/${todoList?.id.toString()}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                    <ListItem component="div" disablePadding sx={id === todoList?.id.toString() ? { backgroundColor: blueGrey.A100 } : {}}>
+                      <Box sx={id === todoList?.id.toString() ? { borderLeft: 'solid #2196f3 5px', height: '20px', borderRadius: 5 } : { borderLeft: 'solid transparent 5px', height: '15px' }} />
+                      <ListItemButton>
+                        <ListItemText
+                          primary={`${todoList.name}`}
+                          sx={{
+                            '& .MuiTypography-body1': {
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              whiteSpace: 'nowrap',
+                            },
+                          }}
+                        />
+                      </ListItemButton>
+                    </ListItem>
+                  </Link>
                 ) : (
                   <ListItem component="div" disablePadding>
                     <ListItemButton>

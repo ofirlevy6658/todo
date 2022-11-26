@@ -41,9 +41,9 @@ export const addList = async (name: string) => {
   return res.data;
 };
 
-export const getTodos = async ({ pageParam = 1 }) => {
-  const res = await axiosInstance.get<ITodo>('/todo', {
-    params: { page: pageParam, limit: 7 },
+export const getTodos = async ({ pageParam = 1, id = '' }) => {
+  const res = await axiosInstance.get<ITodo>(`/todo/list/${id}`, {
+    params: { page: pageParam, limit: 20 },
   });
   return res.data;
 };

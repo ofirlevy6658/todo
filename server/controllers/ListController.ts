@@ -68,3 +68,19 @@ export async function updateList(req: Request, res: Response) {
     return res.sendStatus(500);
   }
 }
+
+//update list background
+export async function updateListBackground(req: Request, res: Response) {
+  const { id } = req.params;
+  const userId = (req as CustomRequest).userId;
+  let { background } = req.body;
+  if (!id) return res.status(400).send('Missing List ID');
+  if (!background) return res.status(400).send('Missing background');
+  try {
+    const result = await db.query('update lists set background = $1 where id = $2 and user_id = $3;', [+background, id, userId]);
+    return res.status(200).send(`Updated ${result.rowCount} rows.`);
+  } catch (error) {
+    console.error(error);
+    return res.sendStatus(500);
+  }
+}

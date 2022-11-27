@@ -30,6 +30,7 @@
     "typescript": "^4.8.4"
   },
   "scripts": {
-    "serve": "nodemon index.ts"
+    "serve": "nodemon index.ts",
+    "expose": "lt --port 5000 --subdomain guydav"
   }
 }

@@ -39,12 +39,12 @@ export async function getTodoByListId(req: Request, res: Response) {
   try {
     const todosResult = await db.query('SELECT * FROM todos WHERE user_id = $3 AND list_id = $4 LIMIT $1 OFFSET $2', [limit, (page - 1) * limit, userId, listId]);
     const todosTotal = await db.query('SELECT COUNT(*) FROM TODOS WHERE user_id = $1 AND list_id = $2', [userId, listId]);
-
+    const listOfTodo = await db.query('SELECT * FROM lists WHERE id = $1', [listId]);
     const todos = todosResult.rows;
     const count = todosResult.rowCount;
     const totalPages = Math.ceil(+todosTotal.rows[0].count / limit);
 
-    res.send({ todos, count, totalPages, currentPage: +page });
+    res.send({ todos, count, totalPages, currentPage: +page , list: listOfTodo.rows[0]});
   } catch (err) {
     console.log(err);
     res.status(500).send(err);

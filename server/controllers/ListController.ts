@@ -7,6 +7,11 @@ export async function addList(req: Request, res: Response) {
   let { name, icon, background } = req.body;
   if (!name) return res.status(400).send('Name of the list is missing.');
 
+  if (!icon) {
+    var emojis = ['😄', '😃', '😀', '😊', '☺', '😉', '😍', '😘', '😚'];
+    icon = emojis[Math.floor(Math.random() * emojis.length)];
+  }
+  if (!background) background = 1;
   try {
     const { rows } = await db.query('insert into lists (user_id, name, icon, background) values ($1, $2, $3, $4) returning *', [userId, name, icon, background]);
     return res.status(200).send(rows[0]);

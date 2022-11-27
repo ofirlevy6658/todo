@@ -9,7 +9,7 @@ export async function addList(req: Request, res: Response) {
 
   if (!icon) {
     var emojis = ['😄', '😃', '😀', '😊', '☺', '😉', '😍', '😘', '😚'];
-    icon = emojis[Math.floor(Math.random() * emojis.length)];
+    icon = emojis[Math.floor(Math.random() * emojis.length)].charCodeAt(0);
   }
   if (!background) background = 1;
   try {

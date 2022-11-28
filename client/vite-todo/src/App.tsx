@@ -14,6 +14,10 @@ export const router = createBrowserRouter([
     element: <ProtectedRoutes />,
     children: [
       {
+        path: '/',
+        element: <TodoAppPage />,
+      },
+      {
         path: '/:id',
         element: <TodoAppPage />,
       },

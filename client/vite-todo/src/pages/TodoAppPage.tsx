@@ -13,7 +13,7 @@ import { CircularProgress, Typography } from '@mui/material';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { getTodos, createTodo, deleteTodo, updateTodo } from '../api/axios';
 import { SideToolBar } from '../components/SideToolBar';
-import { TodoList } from '../components/TodoList';
+import { Todos } from '../components/Todos';
 
 export const TodoAppPage = () => {
   const [open, setOpen] = useState(false);
@@ -113,7 +113,7 @@ export const TodoAppPage = () => {
           // border: '1px solid black',
         }}>
         <SideToolBar />
-        <TodoList />
+        <Todos />
       </Box>
     </>
   );

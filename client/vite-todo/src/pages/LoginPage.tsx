@@ -1,15 +1,15 @@
 import React from 'react';
 import { Box, InputLabel, Paper, Typography, FormControl, Button, Checkbox, FormControlLabel, Divider, FormHelperText } from '@mui/material';
+import * as yup from 'yup';
 import { pink, grey } from '@mui/material/colors';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
 import { useMutation } from '@tanstack/react-query';
-import { axiosInstance, loginReq } from '../api/axios';
+import { loginReq } from '../api/axios';
 import { BootstrapInput } from '../ui/StyledInputs';
 import { Navigate, useNavigate } from 'react-router-dom';
+import useLocalStorage from '../hooks/useLocalStorage';
 import useSessionStorage from '../hooks/useSessionStorage';
-import { useLocalStorage } from 'usehooks-ts';
 
 type Inputs = {
   email: string;
@@ -44,7 +44,6 @@ export const LoginPage = () => {
     mutationFn: (credinatils: { email: string; password: string }) => loginReq(credinatils),
     onSuccess: (resp: { accessToken: string }) => {
       watch('rememberMe') ? setAccessTokenLocalStorage(resp.accessToken) : setAccessTokenSessionStorage(resp.accessToken);
-      axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${resp.accessToken}`;
     },
   });
 

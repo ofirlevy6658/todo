@@ -68,7 +68,7 @@ export function TodoList() {
                       <Box sx={id === todoList?.id.toString() ? { borderLeft: 'solid #2196f3 5px', height: '20px', borderRadius: 5 } : { borderLeft: 'solid transparent 5px', height: '15px' }} />
                       <ListItemButton>
                         <ListItemText
-                          primary={`${todoList.name}`}
+                          primary={`${todoList.icon} ${todoList.name}`}
                           sx={{
                             '& .MuiTypography-body1': {
                               overflow: 'hidden',

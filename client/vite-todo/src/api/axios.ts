@@ -1,26 +1,41 @@
-import { router } from './../App';
 import axios from 'axios';
+
+import { router } from './../App';
+import { ILists } from './../Types';
 import { ITodo } from '../Types';
 
 export const axiosInstance = axios.create({
   baseURL: 'http://localhost:5000',
+  headers: {
+    'Content-Type': 'application/json',
+  },
 });
 
-const accessToken = sessionStorage.getItem('accessToken') ?? localStorage.getItem('accessToken');
-
-if (accessToken) {
-  axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${JSON.parse(accessToken)}`;
-}
+axiosInstance.interceptors.request.use(
+  (config) => {
+    const token = sessionStorage.getItem('accessToken') ?? localStorage.getItem('accessToken');
+    if (token && config.headers) {
+      config.headers['Authorization'] = `Bearer ${JSON.parse(token)}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 axiosInstance.interceptors.response.use(
   function (response) {
     return response;
   },
-  function (error) {
+  async function (error) {
+    const originalConfig = error.config;
+
     if (axios.isAxiosError(error)) {
-      if (error.response?.status === 401 || error.response?.status === 403) {
-        localStorage.clear();
-        sessionStorage.clear();
+      if (error.response?.status === 401 && !originalConfig._retry) {
+        originalConfig._retry = true;
+        // const res = await axiosInstance.post('user/refresh');
+        clearStorage();
         router.navigate('/login', { replace: true });
       }
     }
@@ -28,9 +43,40 @@ axiosInstance.interceptors.response.use(
   }
 );
 
-export const getTodos = async (page = 1) => {
-  const res = await axiosInstance.get<ITodo>('/todo', {
-    params: { page, limit: 7 },
+const clearStorage = () => {
+  localStorage.clear();
+  sessionStorage.clear();
+};
+// const refreshToken = async () => {
+//   try {
+//     const res = await axiosInstance.post('user/refresh');
+//     return res;
+//   } catch (e) {
+//     throw e;
+//   }
+// };
+
+export const getList = async ({ pageParam = 1 }) => {
+  const res = await axiosInstance.get<ILists>('/list', {
+    params: { page: pageParam, limit: 20 },
+  });
+  return res.data;
+};
+
+export const addList = async (name: string) => {
+  const res = await axiosInstance.post<ILists>('/list', { name });
+  return res.data;
+};
+
+export const updateBackground = async (data: { id: string; bgIndex: number }) => {
+  const { id, bgIndex } = data;
+  const res = await axiosInstance.put(`/list/${id}/background`, { background: bgIndex });
+  return res.data;
+};
+
+export const getTodos = async ({ pageParam = 1, id = '' }) => {
+  const res = await axiosInstance.get<ITodo>(`/todo/list/${id}`, {
+    params: { page: pageParam, limit: 20 },
   });
   return res.data;
 };
@@ -46,7 +92,7 @@ export const deleteTodo = async (id: number) => {
 };
 
 export const updateTodo = async (data: { id: number; completed: boolean }) => {
-  const res = await axiosInstance.put(`todo/${data.id}`, { completed: data.completed });
+  const res = await axiosInstance.put(`/todo/list/${data.id}`, { completed: data.completed });
   return res.data;
 };
 

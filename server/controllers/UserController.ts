@@ -47,10 +47,8 @@ export const login = async (req: Request, res: Response) => {
         const id = rows[0].id;
         const accessToken = generateAccessToken(id);
         const refreshToken = jwt.sign({ id }, process.env.JWT_SECRET_STRING!, { expiresIn: '7d' });
-        res.cookie('rtkn', refreshToken, { httpOnly: true });
-
         db.query('update users set last_login = $1 where id = $2', [new Date(), id]);
-        return res.status(200).send({ accessToken });
+        return res.status(200).send({ accessToken, refreshToken });
       }
     }
   } catch (error) {
@@ -62,7 +60,7 @@ export const login = async (req: Request, res: Response) => {
 };
 
 export const refresh = async (req: Request, res: Response) => {
-  const refreshToken = req.cookies?.rtkn;
+  const refreshToken = req.body.refreshToken;
   if (!refreshToken) return res.sendStatus(403);
   try {
     const { id } = jwt.verify(refreshToken, process.env.JWT_SECRET_STRING!) as { id: string };

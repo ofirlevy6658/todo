@@ -34,9 +34,15 @@ axiosInstance.interceptors.response.use(
     if (axios.isAxiosError(error)) {
       if (error.response?.status === 401 && !originalConfig._retry) {
         originalConfig._retry = true;
-        // const res = await axiosInstance.post('user/refresh');
-        clearStorage();
-        router.navigate('/login', { replace: true });
+        const refreshToken = JSON.parse(localStorage.getItem('refreshToken') ?? '');
+        try {
+          const res = await axiosInstance.post<{ accessToken: string }>('user/refresh', { refreshToken });
+          updateTokens(res.data.accessToken);
+          return;
+        } catch (e) {
+          clearStorage();
+          router.navigate('/login', { replace: true });
+        }
       }
     }
     return Promise.reject(error);
@@ -47,14 +53,13 @@ const clearStorage = () => {
   localStorage.clear();
   sessionStorage.clear();
 };
-// const refreshToken = async () => {
-//   try {
-//     const res = await axiosInstance.post('user/refresh');
-//     return res;
-//   } catch (e) {
-//     throw e;
-//   }
-// };
+const updateTokens = (accessToken: string) => {
+  if (sessionStorage.getItem('accessToken')) {
+    sessionStorage.setItem('accessToken', JSON.stringify(accessToken));
+  } else if (localStorage.getItem('accessToken')) {
+    localStorage.setItem('accessToken', JSON.stringify(accessToken));
+  }
+};
 
 export const getList = async ({ pageParam = 1 }) => {
   const res = await axiosInstance.get<ILists>('/list', {
@@ -97,7 +102,7 @@ export const updateTodo = async (data: { id: number; completed: boolean }) => {
 };
 
 export const loginReq = async (credinatils: { email: string; password: string }) => {
-  const res = await axiosInstance.post('user/login', credinatils);
+  const res = await axiosInstance.post<{ accessToken: string; refreshToken: string }>('user/login', credinatils);
   return res.data;
 };
 

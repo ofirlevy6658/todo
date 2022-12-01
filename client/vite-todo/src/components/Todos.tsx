@@ -1,5 +1,5 @@
 import WallpaperIcon from '@mui/icons-material/Wallpaper';
-import { Box, Typography } from '@mui/material';
+import { Box, Skeleton, Typography } from '@mui/material';
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import { Stack } from '@mui/system';
@@ -46,32 +46,38 @@ export const Todos = () => {
   };
 
   return (
-    <Box
-      sx={{
-        height: '100%',
-        maxHeight: 800,
-        minHeight: 400,
-        width: 850,
-        backgroundImage: data?.pages[0].list.background ? `url(${{ 1: bg1, 2: bg2, 3: bg3, 4: bg4, 5: bg5, 6: bg6, 7: bg7, 8: bg8, 9: bg9 }[+data.pages[0].list.background]})` : undefined,
-        backgroundSize: 'cover',
-        backgroundRepeat: 'no-repeat',
-        display: 'flex',
-        flexDirection: 'column',
-        borderTopLeftRadius: 7,
-      }}>
-      <Box sx={{ paddingX: 12, paddingY: 8 }}>
-        <Stack direction="row" spacing={2} justifyContent="space-between">
-          <Box>
-            <Typography color="white" variant="h4">
-              {data?.pages[0].list.name}
-            </Typography>
+    <>
+      {data?.pages[0].list.background ? (
+        <Box
+          sx={{
+            height: '100%',
+            maxHeight: 800,
+            minHeight: 400,
+            width: 850,
+            backgroundImage: data?.pages[0].list.background ? `url(${{ 1: bg1, 2: bg2, 3: bg3, 4: bg4, 5: bg5, 6: bg6, 7: bg7, 8: bg8, 9: bg9 }[+data.pages[0].list.background]})` : undefined,
+            backgroundSize: 'cover',
+            backgroundRepeat: 'no-repeat',
+            display: 'flex',
+            flexDirection: 'column',
+            borderTopLeftRadius: 7,
+          }}>
+          <Box sx={{ paddingX: 12, paddingY: 8 }}>
+            <Stack direction="row" spacing={2} justifyContent="space-between">
+              <Box>
+                <Typography color="white" variant="h4">
+                  {data?.pages[0].list.name}
+                </Typography>
+              </Box>
+              <Box>
+                <WallpaperDropDownSelector onWallpaperClick={handleWallpaperClick} />
+              </Box>
+            </Stack>
           </Box>
-          <Box>
-            <WallpaperDropDownSelector onWallpaperClick={handleWallpaperClick} />
-          </Box>
-        </Stack>
-      </Box>
-    </Box>
+        </Box>
+      ) : (
+        <Skeleton variant="rectangular" sx={{ height: '100%', maxHeight: 800, minHeight: 400, width: 850, bgcolor: 'grey.300' }} />
+      )}
+    </>
   );
 };
 

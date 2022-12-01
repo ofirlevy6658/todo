@@ -28,6 +28,7 @@ const schema = yup
 export const LoginPage = () => {
   const [accessTokenSessionStorage, setAccessTokenSessionStorage] = useSessionStorage('accessToken', '');
   const [accessTokenLocalStorage, setAccessTokenLocalStorage] = useLocalStorage('accessToken', '');
+  const [, setRefreshTokenLocalStorage] = useLocalStorage('refreshToken', '');
 
   const {
     register,
@@ -42,8 +43,9 @@ export const LoginPage = () => {
 
   const loginMutate = useMutation({
     mutationFn: (credinatils: { email: string; password: string }) => loginReq(credinatils),
-    onSuccess: (resp: { accessToken: string }) => {
+    onSuccess: (resp) => {
       watch('rememberMe') ? setAccessTokenLocalStorage(resp.accessToken) : setAccessTokenSessionStorage(resp.accessToken);
+      setRefreshTokenLocalStorage(resp.refreshToken);
     },
   });
 

@@ -3,7 +3,7 @@ Full-Stack responsive web application with secure authentication system
 </br>
 frontend - Vite React TS React Query,React Virtual ,useForm and MUI 5, 
 </br>
-Backend - ts-node Express JWT PostgreSQL
+Backend - Node TS Express JWT PostgreSQL
 
 *the project still in progress*
 

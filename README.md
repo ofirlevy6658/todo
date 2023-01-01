@@ -1,9 +1,9 @@
 # To-Do List 
 Full-Stack responsive web application with secure authentication system
 </br>
-Frontend - Vite React TS React Query,React Virtual ,useForm and MUI 5, 
+Frontend - Vite React TS React Query,React Virtual ,useForm and MUI 5
 </br>
-Backend - Node TS Express JWT PostgreSQL
+Backend - Node TS, Express JWT, PostgreSQL
 
 *the project still in progress*
 
